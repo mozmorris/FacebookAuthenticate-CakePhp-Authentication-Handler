@@ -19,7 +19,7 @@ It should be noted that though this handler stores the access token returned by 
 
 First clone the repository into a new `app/Plugin/FacebookAuth` directory
 
-    git clone git://github.com/mozmorris/xxxxxxxxxx /path/to/your/app/Plugin/FacebookAuth
+    git clone git://github.com/MozMorris/FacebookAuthenticate-CakePhp-Authentication-Handler.git /path/to/your/app/Plugin/FacebookAuth
 	
 ## Facebook Application & App Configuration
 
