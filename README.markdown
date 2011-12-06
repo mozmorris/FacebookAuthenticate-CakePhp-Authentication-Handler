@@ -1,4 +1,4 @@
-# CakePhp Facebook Authentication Handler - FacebookAuthenticate
+# FacebookAuthenticate - CakePhp Facebook Authentication Handler
 * Author:  Moz Morris (moz@earthview.co.uk)
 * version 1.0
 * http://www.earthview.co.uk
