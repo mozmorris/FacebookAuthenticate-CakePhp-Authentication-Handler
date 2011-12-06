@@ -1,5 +1,11 @@
 <?php
 /**
+* FacebookAuthenticate handler that works with AuthComponent 
+*
+* By default, uses a User model and requires that the database table has added
+* email, facebook_user_id, & facebook_access_token fields. See README for detailed 
+* installation and usage instructions
+*
 * @author Moz Morris <moz@earthview.co.uk>
 * @link http://www.earthview.co.uk
 * @copyright (c) 2011 Moz Morris

@@ -1,4 +1,15 @@
 <?php
+/**
+* Sample ExamplesController 
+*
+* Demonstrate a typical use case scenario.å
+*
+* @author Moz Morris <moz@earthview.co.uk>
+* @link http://www.earthview.co.uk
+* @copyright (c) 2011 Moz Morris
+* @license MIT License - http://www.opensource.org/licenses/mit-license.php
+ */
+
 App::uses('AppController', 'Controller');
 /**
  * Examples Controller
