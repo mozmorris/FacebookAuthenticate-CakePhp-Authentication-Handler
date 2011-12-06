@@ -1,0 +1,8 @@
+[facebook]
+app_id = false
+app_secret = false
+oauth_dialg_url = https://www.facebook.com/dialog/oauth
+permissions[] = email
+# permissions[] = user_checkins
+# permissions[] = user_location
+# permissions[] = publish_checkins
