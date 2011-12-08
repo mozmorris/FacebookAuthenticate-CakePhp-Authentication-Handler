@@ -189,8 +189,15 @@ class FacebookAuthenticate extends BaseAuthenticate {
     list($plugin, $model) = pluginSplit($userModel);
     $fields = $this->settings['fields'];
     
+    /**
+     * We use the OR clause. This ensures we return a User who may already 
+     * exist in the database but has not previously authenticated with Facebook.
+     */
     $conditions = array(
-      $model . '.' . $fields['username'] => $user['email'],
+      'OR' => array(
+        array($model . '.facebook_user_id' => $user['id']),
+        array($model . '.' . $fields['username'] => $user['email']),
+      )
     );
     
     if (!empty($this->settings['scope'])) {
