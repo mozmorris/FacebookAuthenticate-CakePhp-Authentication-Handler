@@ -111,23 +111,23 @@ class FacebookAuthenticate extends BaseAuthenticate {
                       . "&code=" . $this->_Request->query['code'];
       
       /**
-       * Parse the response to get the access token
+       * Call to Facebook to get access token
        */
-      $response = @file_get_contents($tokenRequest);
-      $params = null;
-      parse_str($response, $params);
+      if (($response = $this->_connect($tokenRequest)) !== false) {
+     	  parse_str($response, $response);
+      }      
       
       /**
        * Something went wrong! todo
        */
-      if (empty($params['access_token'])) {
+      if (empty($response['access_token'])) {
         return false;
       }
       
       /**
        * Find, (update|create), & return the user
        */
-      return $this->_findUser($params['access_token']);
+      return $this->_findUser($response['access_token']);
       
 		} elseif (!empty($this->_Request->query['error_reason'])) {
 		  /*
@@ -156,11 +156,16 @@ class FacebookAuthenticate extends BaseAuthenticate {
   	                . "?access_token=" 
                     . $accessToken;
 
-    $user = json_decode(@file_get_contents($userRequest), true);
-    
-    if (empty($user)) {
+    /**
+     * Make request to Facebook
+     */     
+    $response = $this->_connect($userRequest);
+
+    if (!$response) {
       return false;
     }
+    
+    $user = json_decode($response, true);
     
     /**
      * Check that the user exists
@@ -274,6 +279,52 @@ class FacebookAuthenticate extends BaseAuthenticate {
     }
     
     return $result[$model];    
+  }
+  
+  /**
+   * Make a connection to given url using cURL if enabled.
+   * Falls back to file_get_contents if cURL isn't enabled.
+   *
+   * @param string $url 
+   * @return Mixed Either false on failure, or string of returned page
+   */
+  public function _connect($url)
+  {
+    $response = false;
+    /**
+     * Check to see if cURL is enabled 
+     */
+    if (is_callable('curl_init')) {
+      
+      $curl = curl_init($url);
+
+      if (is_resource($curl) === true) {
+        curl_setopt($curl, CURLOPT_FAILONERROR, true);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        
+        /**
+         * Attempt to execute the session until we get a result OR
+         * the number of maximum attempts has been reached
+         */
+        $attempts = 3; 
+        while (($response === false) && (--$attempts > 0)) {
+          $response = curl_exec($curl);
+        }
+        
+        curl_close($curl);
+      } else {
+        return false;
+      }
+    
+    /**
+     * If cURL is not enabled, we use file_get_contents
+     */
+    } else {
+      $response = @file_get_contents($url);
+    }
+    
+    return $response;
   }
 
 }
