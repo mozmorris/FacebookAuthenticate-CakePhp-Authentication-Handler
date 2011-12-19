@@ -31,12 +31,7 @@ class ExamplesController extends AppController {
       ),
       'authError' => 'Did you really think you are allowed to see that?',
       'authenticate' => array(
-        'FacebookAuth.Facebook' => array(
-          'fields' => array(
-            'username' => 'email',
-      			'password' => 'password'
-          )
-        )
+        'FacebookAuth.Facebook'
       )
     )
   );

@@ -2,9 +2,8 @@
 /**
 * FacebookAuthenticate handler that works with AuthComponent 
 *
-* By default, uses a User model and requires that the database table has added
-* email, facebook_user_id, & facebook_access_token fields. See README for detailed 
-* installation and usage instructions
+* Database-less implementation of the FacebookAuthenticate handler
+* See README for detailed installation and usage instructions
 *
 * @author Moz Morris <moz@earthview.co.uk>
 * @link http://www.earthview.co.uk
@@ -31,17 +30,11 @@ class FacebookAuthenticate extends BaseAuthenticate {
       'id'     => null,
       'secret' => null
 	  ),
-	  'fields' => array(
-			'username' => 'email',
-			'password' => 'password'
-		),
-	  'scope' => array(),
 	  'urls' => array(
 	    'api'          => 'https://graph.facebook.com',
   	  'access_token' => '/oauth/access_token',
   	  'user'         => '/me'
-	  ),		
-	  'userModel' => 'User'
+	  )
 	);
 
 /**
@@ -125,7 +118,7 @@ class FacebookAuthenticate extends BaseAuthenticate {
       }
       
       /**
-       * Find, (update|create), & return the user
+       * Find & return the user from Facebook
        */
       return $this->_findUser($response['access_token']);
       
@@ -167,118 +160,11 @@ class FacebookAuthenticate extends BaseAuthenticate {
     
     $user = json_decode($response, true);
     
-    /**
-     * Check that the user exists
-     * A user's details are updated if they exist
-     * else they are created
-     */
-    if (($existingUser = $this->_checkUser($user)) !== false) {
-      return $this->_updateUser($existingUser, $user, $accessToken);
-    } else {
-      return $this->_createUser($user, $accessToken);
-    }
-  }
-  
-  /**
-   * Check to see if the user exists
-   *
-   * @param array $user 
-   * @return Mixed Either false on failure, or an array of user data.
-   */
-  protected function _checkUser($user)
-  {
-    /**
-     * Some of this is lifted from BaseAuthenticate
-     */
-    $userModel = $this->settings['userModel'];
-    list($plugin, $model) = pluginSplit($userModel);
-    $fields = $this->settings['fields'];
-    
-    /**
-     * We use the OR clause. This ensures we return a User who may already 
-     * exist in the database but has not previously authenticated with Facebook.
-     */
-    $conditions = array(
-      'OR' => array(
-        array($model . '.facebook_user_id' => $user['id']),
-        array($model . '.' . $fields['username'] => $user['email']),
-      )
-    );
-    
-    if (!empty($this->settings['scope'])) {
-      $conditions = array_merge($conditions, $this->settings['scope']);
-    }
-    
-    $result = ClassRegistry::init($userModel)->find('first', array(
-      'conditions' => $conditions,
-      'recursive' => 0
-    ));
-    
-    if (empty($result) || empty($result[$model])) {
+    if (!$user) {
       return false;
     }
     
-    unset($result[$model][$fields['password']]);
-    return $result[$model];    
-    
-  }
-  
-  /**
-   * Creates a user with Facebook email, id & token
-   *
-   * @param array $user 
-   * @param string $token 
-   * @return Mixed Either false on failure, or an array of user data.
-   */
-  protected function _createUser($user, $token)
-  {
-    $userModel = $this->settings['userModel'];
-    list($plugin, $model) = pluginSplit($userModel);
-    $fields = $this->settings['fields'];
-    
-    $result = ClassRegistry::init($userModel)->save(array(
-      'User' => array(
-        'email'                 => $user['email'],
-        'facebook_user_id'      => $user['id'],
-        'facebook_access_token' => $token
-      )
-    ), false);
-        
-    if (empty($result) || empty($result[$model])) {
-      return false;
-    }
-    
-    return $result[$model];    
-  }
-  
-  /**
-   * Update an existing user with Facebook email, id & token
-   *
-   * @param array $user 
-   * @param array $fbDetails 
-   * @param string $token 
-   * @return Mixed Either false on failure, or an array of user data.
-   */
-  protected function _updateUser($user, $fbDetails, $token)
-  {
-    $userModel = $this->settings['userModel'];
-    list($plugin, $model) = pluginSplit($userModel);
-    $fields = $this->settings['fields'];
-    
-    $result = ClassRegistry::init($userModel)->save(array(
-      'User' => array(
-        'id'                    => $user['id'],
-        'email'                 => $fbDetails['email'],
-        'facebook_user_id'      => $fbDetails['id'],
-        'facebook_access_token' => $token
-      )
-    ), false);    
-        
-    if (empty($result) || empty($result[$model])) {
-      return false;
-    }
-    
-    return $result[$model];    
+    return $user;
   }
   
   /**

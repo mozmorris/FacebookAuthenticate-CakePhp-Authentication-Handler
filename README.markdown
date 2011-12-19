@@ -4,6 +4,8 @@
 * http://www.earthview.co.uk
 * license: MIT
 
+**This is the database-less version of FacebookAuthenticate**
+
 The purpose of the Facebook Authentication Handler is to provide Facebook Authentication for your CakePHP 2.0 or later based application. The handler has been built following Cake's recommended approach for building [custom authentication objects](http://book.cakephp.org/2.0/en/core-libraries/components/authentication.html?#creating-custom-authentication-objects "Authentication &mdash; CakePHP Cookbook v2.0.0 documentation") for use with the built in AuthComponent.
 The handler itself is part a *FacebookAuth* plugin, though this is essentially to make the handler easily redistributable with example configuration settings and an example controller detailing a typical use case scenario.
 
@@ -20,6 +22,10 @@ It should be noted that though this handler stores the access token returned by 
 First clone the repository into a new `app/Plugin/FacebookAuth` directory
 
     git clone git://github.com/MozMorris/FacebookAuthenticate-CakePhp-Authentication-Handler.git /path/to/your/app/Plugin/FacebookAuth
+    
+Then switch to database-less branch
+
+    git checkout database-less
 	
 ## Facebook Application & App Configuration
 
@@ -58,12 +64,6 @@ Configuring the handler at runtime:
       );
     }
 
-## Database
-
-Add Facebook user id and access token fields to your User model. In this example we're adding the fields to the _users_ table which is pretty much the standard for Cake apps using some kind of user authentication. If your app is slightly different, then make the relevant changes.
-
-    ALTER TABLE `users` ADD `facebook_user_id` BIGINT  NULL  DEFAULT NULL;  
-    ALTER TABLE `users` ADD `facebook_access_token` VARCHAR(255)  NULL  DEFAULT NULL;
     
 # Usage
 
@@ -91,12 +91,7 @@ Slightly more interesting:
         ),
         'authError' => 'Did you really think you are allowed to see that?',
         'authenticate' => array(
-          'FacebookAuth.Facebook' => array(
-            'fields' => array(
-              'username' => 'email',
-        			'password' => 'password'
-            )
-          )
+          'FacebookAuth.Facebook'
         )
       )
     );
