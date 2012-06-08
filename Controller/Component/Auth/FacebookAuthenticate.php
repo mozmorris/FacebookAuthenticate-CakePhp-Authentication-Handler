@@ -3,7 +3,7 @@
 * FacebookAuthenticate handler that works with AuthComponent
 *
 * By default, uses a User model and requires that the database table has added
-* email, facebook_user_id, & facebook_access_token fields. See README for detailed
+* email, name, facebook_user_id, & facebook_access_token fields. See README for detailed
 * installation and usage instructions
 *
 * @author Moz Morris <moz@earthview.co.uk>
@@ -21,19 +21,23 @@ App::uses('BaseAuthenticate', 'Controller/Component/Auth');
  */
 class FacebookAuthenticate extends BaseAuthenticate {
 
-/**
- * Settings for this object.
- *
- * @var array
- */
+  /**
+   * Settings for this object.
+   *
+   * @var array
+   */
   public $settings = array(
     'application' => array(
       'id'     => null,
       'secret' => null
     ),
     'fields' => array(
-      'username' => 'email',
-      'password' => 'password'
+      'id'                    => 'id',
+      'email'                 => 'email',
+      'name'                  => 'name',
+      'password'              => 'password',
+      'facebook_user_id'      => 'facebook_user_id',
+      'facebook_access_token' => 'facebook_access_token'
     ),
     'scope' => array(),
     'urls' => array(
@@ -200,8 +204,8 @@ class FacebookAuthenticate extends BaseAuthenticate {
      */
     $conditions = array(
       'OR' => array(
-        array($model . '.facebook_user_id' => $user['id']),
-        array($model . '.' . $fields['username'] => $user['email']),
+        array($model . '.' . $fields['facebook_user_id'] => $user['id']),
+        array($model . '.' . $fields['email'] => $user['email']),
       )
     );
 
@@ -239,13 +243,13 @@ class FacebookAuthenticate extends BaseAuthenticate {
     $modelInstance = ClassRegistry::init($userModel);
 
     $modelInstance->create();
-    $result = $modelInstance->save(array(
-      'User' => array(
-        'email'                 => $user['email'],
-        'facebook_user_id'      => $user['id'],
-        'facebook_access_token' => $token
-      )
-    ), false);
+    $newUser = array(
+        $fields['email']                  => $user['email'],
+        $fields['name']                   => $user['name'],
+        $fields['facebook_user_id']       => $user['id'],
+        $fields['facebook_acccess_token'] => $token
+    );
+    $result = $modelInstance->save(array($userModel => $newUser, false));
 
     if (empty($result) || empty($result[$model])) {
       return false;
@@ -269,11 +273,12 @@ class FacebookAuthenticate extends BaseAuthenticate {
     $fields = $this->settings['fields'];
 
     $result = ClassRegistry::init($userModel)->save(array(
-      'User' => array(
-        'id'                    => $user['id'],
-        'email'                 => $fbDetails['email'],
-        'facebook_user_id'      => $fbDetails['id'],
-        'facebook_access_token' => $token
+      $userModel => array(
+        $fields['id']                    => $user[$fields['id']],
+        $fields['email']                 => $fbDetails['email'],
+        $fields['name']                  => $fbDetails['name'],
+        $fields['facebook_user_id']      => $fbDetails['id'],
+        $fields['facebook_access_token'] => $token
       )
     ), false);
 
