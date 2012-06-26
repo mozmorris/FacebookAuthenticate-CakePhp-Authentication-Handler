@@ -1,6 +1,6 @@
 # FacebookAuthenticate - CakePhp Facebook Authentication Handler
 * Author:  Moz Morris (moz@earthview.co.uk)
-* version 1.0
+* version 1.1
 * http://www.earthview.co.uk
 * license: MIT
 
@@ -12,6 +12,7 @@ It should be noted that though this handler stores the access token returned by 
 # Changelog
 
 * 1.0 Sharing it with the world for the very first time.
+* 1.1 Add email & name fields by default & ensure handler uses configuration settings
 
 # Installation
 
@@ -60,10 +61,13 @@ Configuring the handler at runtime:
 
 ## Database
 
-Add Facebook user id and access token fields to your User model. In this example we're adding the fields to the _users_ table which is pretty much the standard for Cake apps using some kind of user authentication. If your app is slightly different, then make the relevant changes.
+Add `email`, `name`, `facebook_user_id`, `facebook_access_token` fields to your User model. In this example we're adding the fields to the _users_ table which is pretty much the standard for Cake apps using some kind of user authentication. If your app is slightly different, then make the relevant changes.
 
+    ALTER TABLE `users` ADD `email` VARCHAR(255)  NOT NULL  DEFAULT '';
+    ALTER TABLE `users` ADD `name` VARCHAR(255)  NOT NULL  DEFAULT '';
     ALTER TABLE `users` ADD `facebook_user_id` BIGINT  NULL  DEFAULT NULL;  
     ALTER TABLE `users` ADD `facebook_access_token` VARCHAR(255)  NULL  DEFAULT NULL;
+    
     
 # Usage
 
