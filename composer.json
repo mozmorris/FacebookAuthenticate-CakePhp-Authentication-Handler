@@ -15,6 +15,6 @@
     "keywords": ["facebook","authentication","cakephp"],
     "license": "MIT",
     "require": {
-        "composer/installers": "*"
+        "composer/installers": "dev-master"
     }
 }
