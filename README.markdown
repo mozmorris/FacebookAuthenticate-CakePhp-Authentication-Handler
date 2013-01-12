@@ -18,10 +18,23 @@ It should be noted that though this handler stores the access token returned by 
 
 ## Get the code
 
+### Via Git
+
 First clone the repository into a new `app/Plugin/FacebookAuth` directory
 
     git clone git://github.com/MozMorris/FacebookAuthenticate-CakePhp-Authentication-Handler.git /path/to/your/app/Plugin/FacebookAuth
-	
+
+### Via Composer
+
+Add a dependency to your `composer.json` file. (Looks like the CakePHP convention is to have the `composer.json` file located under `app/`)
+
+    "require": {
+      "moz-morris/cakephp-facebook-auth": "dev-master"
+    }
+
+Then `composer install` or `composer update`. You might need to add `"minimum-stability": "dev"` to you `composer.json` file.
+
+
 ## Facebook Application & App Configuration
 
 1. Rename the example configuration *FacebookConfig.ini.example* to **FacebookConfig.ini**. It can be found under app/Plugin/FacebookAuth/Config/
@@ -31,25 +44,25 @@ First clone the repository into a new `app/Plugin/FacebookAuth` directory
 5. Configure the FacebookAuth handler at runtime
 
 Loading the plugin and configuration (*bootstrap.php*):
-    
+
     /**
      * Load custom configuration files using the IniReader class
      */
     App::uses('IniReader', 'Configure');
     Configure::config('default', new IniReader(APP . 'Plugin' . DS . 'FacebookAuth' . DS . 'Config' . DS));
     Configure::load('FacebookConfig', 'default');
-    
+
     /**
      * Load Facebook Plugin
      */
     CakePlugin::load('FacebookAuth');
-    
+
 Configuring the handler at runtime:
 
     public function beforeFilter()
     {
       parent::beforeFilter();
-  
+
       /**
        * Configure FacebookAuth handler
        */
@@ -65,10 +78,10 @@ Add `email`, `name`, `facebook_user_id`, `facebook_access_token` fields to your 
 
     ALTER TABLE `users` ADD `email` VARCHAR(255)  NOT NULL  DEFAULT '';
     ALTER TABLE `users` ADD `name` VARCHAR(255)  NOT NULL  DEFAULT '';
-    ALTER TABLE `users` ADD `facebook_user_id` BIGINT  NULL  DEFAULT NULL;  
+    ALTER TABLE `users` ADD `facebook_user_id` BIGINT  NULL  DEFAULT NULL;
     ALTER TABLE `users` ADD `facebook_access_token` VARCHAR(255)  NULL  DEFAULT NULL;
-    
-    
+
+
 # Usage
 
 Basic example:
@@ -110,4 +123,4 @@ See the Cake Book for more ways to configure your [CakePHP AuthComponent](http:/
 There is also an example controller included within the plugin that shows how you could implement the handler.
 
     app/Plugin/FacebookAuth/Controller/ExampleController.php
-  
+
