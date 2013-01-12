@@ -1,0 +1,20 @@
+{
+    "name": "moz-morris/cakephp-facebook-auth",
+    "type": "cakephp-plugin",
+    "description": "Facebook authentication handler for CakePHP 2.0",
+    "authors": [
+        {
+            "name": "Moz Morris",
+            "email": "moz@earthview.co.uk"
+        }
+    ],
+    "extra": {
+        "installer-name": "FacebookAuth"
+    },
+    "homepage": "https://github.com/MozMorris/FacebookAuthenticate-CakePhp-Authentication-Handler",
+    "keywords": ["facebook","authentication","cakephp"],
+    "license": "MIT",
+    "require": {
+        "composer/installers": "*"
+    }
+}
